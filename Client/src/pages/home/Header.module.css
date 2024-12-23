@@ -1,0 +1,59 @@
+.headerMainNavigation {
+    display: flex;
+    min-height: 72px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .brandContainer {
+    display: flex;
+    align-items: center;
+    color: #fff;
+  }
+  
+  .brandLink {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  .brandLogo {
+    width: 35px;
+    height: 35px;
+    object-fit: contain;
+  }
+  
+  .brandName {
+    font: 700 18px Outfit, sans-serif;
+  }
+  
+  .navigation {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font: 16px Open Sans, sans-serif;
+  }
+  
+  .signInButton {
+    border-radius: 6px;
+    color: rgb(126, 166, 255);
+    padding: 10px 17px;
+    border: 1px solid rgb(126, 166, 255);
+    text-decoration: none;
+  }
+  
+  .createButton {
+    border-radius: 6px;
+    background-color: rgb(26, 95, 255);
+    color: #fff;
+    padding: 10px 16px;
+    text-decoration: none;
+  }
+  
+@media (min-width: 992px) {
+  .headerMainNavigation{
+    padding: 0 30px;
+  }
+}

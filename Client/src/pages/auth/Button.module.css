@@ -1,0 +1,32 @@
+.button {
+    border-radius: 12px;
+    width: 100%;
+    padding: 14px;
+    font: 500 14px Poppins, sans-serif;
+    border: none;
+    cursor: pointer;
+    color: #fff;
+    margin-top: 10px;
+  }
+  
+  .primary {
+    background-color: rgba(26, 95, 255, 1);
+    box-shadow: 0px 4px 10px rgba(233, 68, 75, 0.25);
+    color: white;
+  }
+  
+  .google {
+    background-color: rgba(26, 95, 255, 1);
+    box-shadow: 0px 4px 4px rgba(233, 68, 75, 0.25);
+    display: flex;
+    align-items: center;
+    gap: 45px;
+    padding-right: 32px;
+    min-height: 41px;
+  }
+  
+  @media (max-width: 991px) {
+    .google {
+      padding-right: 20px;
+    }
+  }

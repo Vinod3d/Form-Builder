@@ -1,0 +1,102 @@
+.loginScreen {
+    background-color: rgba(18, 18, 18, 1);
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+}
+  
+.backBtn{
+    cursor: pointer;
+    padding: 55px 0 0 55px;
+}
+
+.backIcon {
+    color: #fff !important;
+    font-size: 20px;
+}
+  
+.content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    flex-wrap: wrap;
+    z-index: 10;
+}
+
+.loginBtn{
+    margin-top: 15px;
+}
+
+
+  
+.loginForm {
+    display: flex;
+    max-width: 400px;
+    flex-direction: column;
+    gap: 15px;
+    color: rgba(255, 255, 255, 1);
+    text-align: center;
+    letter-spacing: 0.42px;
+    font: 500 14px Poppins, sans-serif;
+}
+  
+.divider {
+    font-size: 12px;
+    font-weight: 300;
+    letter-spacing: 0.36px;
+}
+
+.googleIcon {
+    background-color: rgba(217, 217, 217, 1);
+    border-radius: 50%;
+    width: 21px;
+    height: 21px;
+    padding: 5px;
+}
+  
+.registerPrompt {
+    font-family: Inter, sans-serif;
+    font-weight: 400;
+    margin-top: 8px;
+}
+  
+.registerLink {
+    color: rgba(26,95,255,1);
+    text-decoration: none;
+    cursor: pointer;
+}
+  
+  
+.decorativeImg1 {
+    width: 375px;
+    align-self: flex-start;
+    position: absolute;
+    top: 220px;
+    display: none;
+}
+  
+.decorativeImg2 {
+    width: 129px;
+    align-self: end; 
+    position: absolute;
+    top: 80px;
+    display: none;
+}
+.decorativeImg3 {
+    width: 220px;
+    position: absolute;
+    bottom: 0px;
+    right: 22%;
+    display: none;
+}
+
+@media (min-width: 992px) {
+    .decorativeImg1, .decorativeImg2, .decorativeImg3{
+        display: block;
+        z-index: 5;
+    }
+}
