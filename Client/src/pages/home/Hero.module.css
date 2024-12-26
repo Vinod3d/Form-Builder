@@ -16,12 +16,14 @@
   position: absolute;
   z-index: -10;
   left: 30px;
+  width: 22vw;
 }
 
 .fig2{
   position: absolute;
   z-index: -10;
   right: 30px;
+  width: 17vw;
 }
 
   
@@ -68,8 +70,10 @@
 }
 
 .blob{
-  width: 600px;
-  height: 600px;
+  max-width: 600px;
+  max-height: 600px;
+  width: 50vw;
+  height: 50vw;
   border-radius: 99999px;
   position: absolute;
   z-index: -10;
@@ -94,6 +98,10 @@
 }
   
 @media (max-width: 991px) {
+
+    .fig1, .fig2{
+      display: none;
+    }
     .heroSection {
       padding: 40px 20px;
     }
@@ -101,6 +109,10 @@
     .heroTitle {
       font-size: 40px;
       line-height: 53px;
+    }
+
+    .heroDescription{
+      font-size: 16px;
     }
   
     .heroImageContainer {

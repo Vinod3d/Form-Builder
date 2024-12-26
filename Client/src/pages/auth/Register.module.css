@@ -3,13 +3,13 @@
     display: flex;
     flex-direction: column;
     width: 100vw;
-    height: 100vh;
+    min-height: 100vh; /* Allows scrolling if content exceeds viewport height */
     position: relative;
 }
   
 .backBtn{
     cursor: pointer;
-    padding: 55px 0 0 55px;
+    padding: 33px 0 0 55px;
 }
 
 .backIcon {
@@ -57,6 +57,7 @@
     font-family: Inter, sans-serif;
     font-weight: 400;
     margin-top: 8px;
+    padding: 0 0 20px 0;
 }
   
 .registerLink {
@@ -75,16 +76,16 @@
 }
   
 .decorativeImg2 {
-    width: 129px;
-    align-self: end; 
+    width: 129px; 
     position: absolute;
     top: 80px;
+    right: 0;
     display: none;
 }
 .decorativeImg3 {
     width: 220px;
     position: absolute;
-    bottom: 0px;
+    bottom: 0;
     right: 22%;
     display: none;
 }

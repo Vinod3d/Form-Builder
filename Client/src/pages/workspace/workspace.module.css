@@ -1,0 +1,79 @@
+.container {
+    min-height: 100vh;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .workspaceSelect {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: inherit;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  .controls {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  
+  .themeToggle input {
+    margin-right: 8px;
+  }
+  
+  .shareButton {
+    background: #0066ff;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  .content {
+    padding: 20px;
+  }
+  
+  .tabs {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  
+  .tab {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  .createCard {
+    width: 200px;
+    height: 200px;
+    background: #0066ff;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    cursor: pointer;
+  }
+  
+  .plusIcon {
+    font-size: 24px;
+  }
+  
+  
