@@ -1,0 +1,30 @@
+.tabsList {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .tabsTrigger {
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border: 1px solid transparent;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 4px;
+    background: transparent;
+  }
+
+  .dark {
+    color: #fff;
+}
+  
+.light {
+    color: #000;
+}
+  
+  .tabsTrigger.active {
+    background-color: transparent;
+    border: 1px solid #7EA6FF !important;
+    border-radius: 6px;
+    color: #7EA6FF;
+  }
+  

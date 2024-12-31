@@ -1,0 +1,128 @@
+.container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    background-color: #1a1a1a;
+    color: #ffffff;
+  }
+  
+
+  .backBtn{
+    cursor: pointer;
+    padding: 33px 0 0 55px;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.backIcon {
+    color: #fff !important;
+    font-size: 20px;
+}
+  .formContainer {
+    width: 100%;
+    max-width: 400px;
+    margin-top: 2rem;
+  }
+  
+  .title {
+    font-size: 1.5rem;
+    font-weight: 500;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .inputGroup {
+    position: relative;
+    margin-bottom: 1rem;
+  }
+
+  .inputIcon{
+    position: absolute;
+    top: 13px;
+    left: 10px;
+  }
+  
+  .input {
+    width: 100%;
+    padding: 0.75rem;
+    padding-left: 31px;
+    background-color: transparent;
+    border: 1px solid #333;
+    border-radius: 11px;
+    color: #fff;
+    font-size: 0.9rem;
+  }
+  .error {
+    color: red;
+    font-size: 0.875rem;
+    margin-top: 5px;
+  }
+  
+  .input:focus {
+    outline: none;
+    border-color: #666;
+  }
+  
+  .toggleIcon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #666;
+  }
+  
+  .updateButton {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #0066ff;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-top: 1rem;
+  }
+  
+  .updateButton:hover {
+    background-color: #0052cc;
+  }
+  
+  .logoutButton {
+    color: #ff3333;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-top: 2rem;
+    position: absolute;
+    bottom: 44px;
+    left: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+  }
+  
+  .logoutButton:hover {
+    text-decoration: underline;
+  }
+  
+  @media (max-width: 480px) {
+    .container {
+      padding: 1rem;
+    }
+    
+    .formContainer {
+      max-width: 100%;
+    }
+    
+    .input {
+      font-size: 16px; /* Prevents zoom on mobile */
+    }
+  }
+  
+  

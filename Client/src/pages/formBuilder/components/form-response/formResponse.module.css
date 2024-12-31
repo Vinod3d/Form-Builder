@@ -1,0 +1,65 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1rem;
+    background: #fff;
+  }
+  
+  .cardHeader h2 {
+    margin: 0;
+  }
+  
+  .cardContent {
+    padding: 1rem 0;
+  }
+  
+  .textMuted {
+    text-align: center;
+    color: #888;
+  }
+  
+  .metricsGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+  
+  .metricCard {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #f9f9f9;
+  }
+  
+  .icon {
+    color: #555;
+    font-size: 1.5rem;
+  }
+  
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .table th,
+  .table td {
+    border: 1px solid #ddd;
+    padding: 0.5rem;
+    text-align: left;
+  }
+  
+  .completionRate {
+    text-align: center;
+    font-size: 1.25rem;
+    font-weight: bold;
+  }
+  

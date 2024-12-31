@@ -1,0 +1,42 @@
+.workspaceSelector {
+    position: relative;
+    width: 200px;
+    cursor: pointer;
+  }
+  
+  .selectedWorkspace {
+    padding: 10px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  .arrow {
+    margin-left: 10px;
+  }
+  
+  .dropdownMenu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    z-index: 10;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  
+  .dropdownItem {
+    padding: 10px;
+    border-bottom: 1px solid #6d6d6d7a;
+    transition: background-color 0.2s ease;
+  }
+  
+  .dropdownItem:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+  }
+  

@@ -5,17 +5,19 @@ import { combineReducers } from 'redux';
 import userReducer from './slice/userSlice.js'
 import workspaceReducer from './slice/workspaceSlice.js'
 import folderReducer from './slice/foderSlice.js'
+import formReducer from './slice/formSlice.js'
 
 const persistConfig = {
     key: "root",
     storage,
-    whitelist: ["user", "workspace"], // Only persist these reducers
+    whitelist: ["user", "workspace"],
 };
 
 const rootReducer = combineReducers({
     user: userReducer,
     workspace: workspaceReducer,
-    folder: folderReducer, // Not persisted
+    folder: folderReducer, 
+    form: formReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

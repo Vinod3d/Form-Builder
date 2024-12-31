@@ -13,7 +13,6 @@ export const getAllWorkspaces = async (req, res, next) => {
 
     res.status(200).json(workspaces);
   } catch (error) {
-    console.error("Error fetching workspaces:", error);
     next(error);
   }
 };
@@ -33,7 +32,6 @@ export const getMyWorkspace = async (req, res, next) => {
 
     res.status(200).json(workspace);
   } catch (error) {
-    console.error("Error fetching workspace:", error);
     return next(error);
   }
 };
@@ -83,30 +81,38 @@ export const deleteFolder = async (req, res, next) => {
       );
     }
 
+    // Find the workspace
     const workspace = await Workspace.findById(workspaceId);
     if (!workspace) {
       return next(CustomErrorHandler.notFound("Workspace not found"));
     }
 
+    // Find the folder
     const folder = await Folder.findById(folderId);
     if (!folder) {
       return next(CustomErrorHandler.notFound("Folder not found"));
     }
 
+    // Check if the folder belongs to the workspace
     if (!workspace.folders.includes(folderId)) {
       return next(
         CustomErrorHandler.badRequest("Folder does not belong to this workspace")
       );
     }
 
+    // Remove the folder reference from the workspace
     workspace.folders = workspace.folders.filter(
       (id) => id.toString() !== folderId
     );
     await workspace.save();
 
+    // Delete all forms associated with the folder
+    await Form.deleteMany({ folderId });
+
+    // Delete the folder itself
     await Folder.findByIdAndDelete(folderId);
 
-    res.status(200).json({ message: "Folder deleted successfully" });
+    res.status(200).json({ message: "Folder and associated forms deleted successfully" });
   } catch (error) {
     next(error);
   }
@@ -114,10 +120,27 @@ export const deleteFolder = async (req, res, next) => {
 
 
 
+export const getFolderById = async (req, res,  next) => {
+  try {
+    const { id } = req.params;
+    const folder = await Folder.findById(id);
+    
+    if (!folder) {
+      return res.status(404).json({ message: "Folder not found" });
+    }
+
+    res.status(200).json(folder);
+  } catch (error) {
+    next(error)
+  }
+};
+
+
 
 export const addForm = async (req, res, next) => {
   try {
     const { title, folderId } = req.body;
+    console.log(req.body);
 
     if (!title) {
       return res.status(400).json({ message: "Title is required" });
@@ -142,18 +165,68 @@ export const addForm = async (req, res, next) => {
 };
 
 
-export const getFolderById = async (req, res,  next) => {
+export const deleteForm = async (req, res, next) => {
   try {
-    const { id } = req.params;
-    const folder = await Folder.findById(id);
-    
-    if (!folder) {
-      return res.status(404).json({ message: "Folder not found" });
+    const { folderId, formId } = req.body;
+
+    if (!folderId || !formId) {
+      return res.status(400).json({ message: "Folder ID and Form ID are required" });
     }
 
-    res.status(200).json(folder);
+    const form = await Form.findOne({ _id: formId, folderId });
+
+    if (!form) {
+      return res.status(404).json({ message: "Form not found in the specified folder" });
+    }
+
+    await Form.findByIdAndDelete(formId);
+
+    return res.status(200).json({ message: "Form deleted successfully" });
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
+
+
+export const getFormsByFolderId = async (req, res, next) => {
+  try {
+    const { fid } = req.params;
+
+    if (!fid) {
+      return res.status(400).json({ message: "Folder ID is required" });
+    }
+
+    const forms = await Form.find({ folderId:fid });
+
+    // if (!forms.length) {
+    //   return res.status(404).json({ message: "No forms found for this folder" });
+    // }
+
+    return res.status(200).json({ forms });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getFormById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).json({ message: "Form ID is required" });
+    }
+
+    const form = await Form.findById(id);
+
+    if (!form) {
+      return res.status(404).json({ message: "Form not found" });
+    }
+
+    return res.status(200).json({ form });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
 

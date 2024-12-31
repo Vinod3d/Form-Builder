@@ -84,7 +84,7 @@ const userSlice = createSlice({
 
         updateUserSuccess: (state, action) => {
             state.loading = false;
-            state.user = action.payload.user;
+            state.user = action.payload;
             state.message = action.payload.message;
             state.error = null;
         },
@@ -184,11 +184,12 @@ export const logout = () => async (dispatch) =>{
 }
 
 
-export const updateUser = (userData, userId) => async (dispatch) => {
+export const updateUser = (userData) => async (dispatch) => {
+    console.log(userData)
     dispatch(userSlice.actions.updateUserRequest());
     try {
-      const response = await axios.put(
-        `${baseUrl}/api/user/update/${userId}`,
+      const response = await axios.patch(
+        `${baseUrl}/api/user/update`,
         userData, {
             headers: {
                 "Content-Type" : "application/json",
@@ -196,6 +197,8 @@ export const updateUser = (userData, userId) => async (dispatch) => {
             withCredentials: true,
         }
       );
+
+      console.log(response.data)
   
       dispatch(userSlice.actions.updateUserSuccess(response.data));
       return true;

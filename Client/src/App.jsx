@@ -6,16 +6,24 @@ import { Register } from './pages/auth/Register'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Workspace from './pages/workspace/workspace';
+import withAuth from './components/withAuth';
+import Settings from './pages/settings/Settings';
+import FormBuilder from './pages/formBuilder/FormBuilder';
 
 
 export default function App() {
+  const ProtectedWorkspace = withAuth(Workspace); 
+  const ProtectedSettings = withAuth(Settings); 
+  const ProtectedFormBuilder = withAuth(FormBuilder); 
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/workspace" element={<Workspace/>} />
+        <Route path="/workspace" element={<ProtectedWorkspace/>} />
+        <Route path="/settings" element={<ProtectedSettings/>} />
+        <Route path="/form-builder/:formId" element={<ProtectedFormBuilder/>} />
       </Routes>
       <ToastContainer position='top-right' />
     </Router>

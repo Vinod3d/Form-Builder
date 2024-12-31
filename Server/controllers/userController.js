@@ -84,42 +84,73 @@ export const login = async (req, res, next)=>{
     }
 }
 
+import bcrypt from "bcrypt";
+
 export const update = async (req, res, next) => {
-  const { name, email, password } = req.body;
+  const { name, email, oldPassword, newPassword } = req.body;
   const userId = req.user._id;
 
   const schema = Joi.object({
     name: Joi.string().min(3).max(50).optional(),
     email: Joi.string().email().optional(),
-    password: Joi.string().min(6).optional(),
+    oldPassword: Joi.string().optional(), // Validate oldPassword
+    newPassword: Joi.string().min(6).optional(), // Validate newPassword
   });
 
-  const { error } = schema.validate({ name, email, password });
+  const { error } = schema.validate({ name, email, oldPassword, newPassword });
   if (error) {
     return next(CustomErrorHandler.validationError(error.message));
   }
 
   try {
+    // Find user
     const user = await User.findById(userId);
     if (!user) {
       return next(CustomErrorHandler.notFound("User not found"));
     }
 
+    // Check if oldPassword and newPassword are provided
+    if (oldPassword && newPassword) {
+      const isValidOldPassword = await user.comparePassword(oldPassword);
+      if (!isValidOldPassword) {
+        return next(CustomErrorHandler.unAuthorized("Invalid old password"));
+      }
+      // Hash and update new password
+      user.password = newPassword;
+    } else if (oldPassword || newPassword) {
+      return next(
+        CustomErrorHandler.validationError(
+          "Both old password and new password must be provided"
+        )
+      );
+    }
+
+    // Update other user details
     if (name) user.name = name;
     if (email) user.email = email;
-    if (password) user.password = password;
 
     await user.save();
 
+    // Update workspace name if user name is updated
+    if (name) {
+      const workspace = await Workspace.findById(user.workspaceId);
+      if (workspace) {
+        workspace.name = `${name}'s Workspace`;
+        await workspace.save();
+      }
+    }
+
     res.status(200).json({
       success: true,
-      message: "Profile updated",
+      message: "Profile updated successfully",
       user,
     });
   } catch (error) {
     next(error);
   }
 };
+
+
 
 
 export const logout = async (req, res, next) => {
