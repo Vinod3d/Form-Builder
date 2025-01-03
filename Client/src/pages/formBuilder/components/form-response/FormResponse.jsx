@@ -1,6 +1,6 @@
 // FormResponse.jsx
 import { FaEye, FaPlayCircle, FaCheckCircle } from "react-icons/fa";
-import styles from "./FormResponse.module.css";
+import styles from "./formResponse.module.css";
 
 // Mock data for demonstration
 const mockAnalytics = {
