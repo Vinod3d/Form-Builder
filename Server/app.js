@@ -29,10 +29,10 @@ app.use(cookieParser(JWT_KEY))
 // Api Routes
 app.use('/api/user', userRoutes);
 app.use('/api/workspace', workspaceRoutes);
-app.use(express.static(path.join(__dirname, 'client/build')));
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
-});
+// app.use(express.static(path.join(__dirname, 'client/build')));
+// app.get('*', (req, res) => {
+//     res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+// });
 
 
 // Health Check Route
