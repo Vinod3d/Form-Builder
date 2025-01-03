@@ -6,7 +6,7 @@ import { Switch } from '../../components/switch/Switch';
 import { toast } from "react-toastify";
 import FormPreview from './components/form-preview/FormPreview';
 import FormResponse from './components/form-response/FormResponse';
-import Sidebar from './components/sidebar/SideBar';
+import Sidebar from './components/sidebar/Sidebar';
 import ChatbotForm from './components/chatbot-form/ChatbotForm';
 
 export default function FormBuilder() {
