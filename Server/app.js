@@ -28,13 +28,13 @@ app.use(cookieParser(JWT_KEY));
 app.use('/api/user', userRoutes);
 app.use('/api/workspace', workspaceRoutes);
 
-app.use(express.static(path.join(__dirname, 'client/build')));
+app.use(express.static(path.join(__dirname, '../client/build')));
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+  res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
 });
 
-console.log(path.join(__dirname, 'client', 'build')); // Log to confirm path
+console.log(path.join(__dirname, '../client', 'build')); // Log to confirm path
 
 
 // Health Check Route
