@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { useState, useRef, useEffect } from "react";
 import styles from "./ChatbotForm.module.css";
@@ -5,14 +6,14 @@ import { FaPaperPlane } from "react-icons/fa";
 import { toast } from "react-toastify";
 
 export default function ChatbotForm({ formFlow }) {
-  console.log(formFlow)
   const [messages, setMessages] = useState([]);
   const [currentStep, setCurrentStep] = useState(0);
   const [currentInput, setCurrentInput] = useState("");
   const [started, setStarted] = useState(false);
   const [answers, setAnswers] = useState({});
   const scrollRef = useRef(null);
-  console.log(answers)
+
+  console.log(formFlow)
 
   useEffect(() => {
     const initialAnswers = {};
@@ -80,16 +81,6 @@ export default function ChatbotForm({ formFlow }) {
   const renderContent = (content) => {
     console.log(content)
 
-    // if (content.input.type === "submit") {
-    //   return (
-    //     <button
-    //       className={styles.submitButton}
-    //       onClick={handleFormSubmit}
-    //     >
-    //       Submit
-    //     </button>
-    //   );
-    // }
     if (content.bubble.type === "image" || content.bubble.type === "gif") {
       return (
         <>
@@ -143,9 +134,6 @@ export default function ChatbotForm({ formFlow }) {
       </div>
     );
   }
-
-  console.log(messages)
-  console.log(formFlow)
 
   return (
     <div className={styles.container}>

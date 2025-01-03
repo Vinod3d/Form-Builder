@@ -6,6 +6,12 @@ import workspaceRoutes from './routes/workspaceRoutes.js'
 import errorHandler from './middleware/errorHandlers.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = APP_PORT;
@@ -23,6 +29,10 @@ app.use(cookieParser(JWT_KEY))
 // Api Routes
 app.use('/api/user', userRoutes);
 app.use('/api/workspace', workspaceRoutes);
+app.use(express.static(path.join(__dirname, 'client/build')));
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+});
 
 
 // Health Check Route

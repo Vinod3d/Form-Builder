@@ -16,7 +16,6 @@ export function TabsTrigger({isDark, value, children, isActive, onClick }) {
     <button
       className={`${styles.tabsTrigger} ${isActive ? styles.active : ''}  ${isDark ? styles.dark : styles.light}`}
       onClick={() => onClick(value)}
-      
     >
       {children}
     </button>
