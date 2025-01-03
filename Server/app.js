@@ -29,10 +29,17 @@ app.use(cookieParser(JWT_KEY))
 // Api Routes
 app.use('/api/user', userRoutes);
 app.use('/api/workspace', workspaceRoutes);
-// app.use(express.static(path.join(__dirname, 'client/build')));
-// app.get('*', (req, res) => {
-//     res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
-// });
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, 'client/build')));
+
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(__dirname, 'client/build', 'index.html'), (err) => {
+            if (err) {
+                res.status(500).send("Internal server error while serving static files.");
+            }
+        });
+    });
+}
 
 
 // Health Check Route
