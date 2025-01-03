@@ -18,9 +18,9 @@ import styles from "./Sidebar.module.css";
 function Sidebar({isDark, onAddElement, onAddInput, activeBubbleId }) {
   const bubbles = [
     { type: "text", icon: IoChatbox, label: "Text" },
-    { type: "url", icon: FaImage, label: "Image" },
-    { type: "url", icon: FaVideo, label: "Video" },
-    { type: "url", icon: AiOutlineGif, label: "GIF" },
+    { type: "image", icon: FaImage, label: "Image" },
+    { type: "video", icon: FaVideo, label: "Video" },
+    { type: "gif", icon: AiOutlineGif, label: "GIF" },
   ];
 
   const inputs = [
@@ -62,7 +62,7 @@ function Sidebar({isDark, onAddElement, onAddInput, activeBubbleId }) {
         <div className={styles.grid}>
           {inputs.map((item) => (
             <button
-              key={item.type}
+              key={item.label}
               size="sm"
               className={styles.button}
               onClick={() => onAddInput(activeBubbleId, item.type)}

@@ -65,8 +65,29 @@ function renderBubbleContent(isDark, bubble, onUpdate) {
     case "video":
     case "gif":
       return (
-        <div className="placeholder">
-          {bubble.type.charAt(0).toUpperCase() + bubble.type.slice(1)} Placeholder
+        <div className={styles.bubbleInputs}>
+          <input
+            type="text"
+            value={bubble.content}
+            onChange={(e) => onUpdate({ content: e.target.value })}
+            className={styles.inputLable}
+            placeholder={`Enter ${bubble.type} label`}
+            style={{
+              color: isDark ? "#fff" : "#000",
+              marginBottom: "8px",
+            }}
+          />
+          <input
+            type="text"
+            value={bubble.url || ""}
+            onChange={(e) => onUpdate({ url: e.target.value })}
+            className={styles.input}
+            placeholder={`Enter ${bubble.type} URL`}
+            style={{
+              backgroundColor: isDark ? "#1F1F23" : "#eceaea",
+              color: isDark ? "#fff" : "#000",
+            }}
+          />
         </div>
       );
     default:
@@ -74,19 +95,42 @@ function renderBubbleContent(isDark, bubble, onUpdate) {
   }
 }
 
+
 function renderInputField(isDark, input, onUpdate) {
+  if (input.type === "submit") {
+    return (
+      <button
+        type="button"
+        className={styles.submitButton}
+        style={{
+          backgroundColor: isDark ? "#4B83FF" : "#4B83FF",
+          color: isDark ? "#fff" : "#fff",
+        }}
+      >
+        {input.label || "Submit"}
+      </button>
+    );
+  }
+
   return (
-    <input
-      type="text"
-      value={input.label}
-      onChange={(e) => onUpdate({ label: e.target.value })}
-      className={styles.input}
-      placeholder="Enter input label"
-      style={{
-        backgroundColor: isDark ? "#1F1F23" : "#eceaea",
-        color: isDark ? "#fff" : "#000",
-      }}
-    />
+     <>
+      <input
+        type="text"
+        // value={input.label}
+        onChange={(e) => onUpdate({ label: e.target.value })}
+        className={styles.userInput}
+        placeholder={`Enter ${input.type} value`}
+        disabled
+        style={{
+          backgroundColor: isDark ? "#1F1F23" : "#eceaea",
+          color: isDark ? "#fff" : "#000",
+        }}
+      />
+
+      <div className={styles.noteMessages}>
+        Hint : - user will fill this input
+      </div>
+    </>
   );
 }
 

@@ -39,7 +39,7 @@ const mockAnalytics = {
   ],
 };
 
-function FormResponse({ formFlow }) {
+function FormResponse({isDark, formFlow }) {
   if (formFlow.elements.length === 0) {
     return (
       <div className={styles.card}>
@@ -55,7 +55,10 @@ function FormResponse({ formFlow }) {
   const completionRate = (mockAnalytics.completed / mockAnalytics.starts) * 100;
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} style={{ 
+      background: isDark? '#1F1F23' : 'transparent',
+      color: isDark? '#fff' : '',
+    }}>
       {/* Metrics */}
       <div className={styles.metricsGrid}>
         <MetricCard title="Views" value={mockAnalytics.views} icon={FaEye} />

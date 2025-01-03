@@ -29,6 +29,8 @@ export default function FormBuilder() {
         id: Math.random().toString(36).substr(2, 9),
         type: bubbleType,
         content: `New ${bubbleType}`,
+        url: bubbleType === "image" || bubbleType === "video" || bubbleType === "gif" ? "" : null,
+        userInput: null
       },
     };
 
@@ -53,7 +55,6 @@ export default function FormBuilder() {
     const newInput = {
       id: Math.random().toString(36).substr(2, 9),
       type: inputType,
-      label: `New ${inputType} input`,
       placeholder: `Enter ${inputType}`,
     };
     setFormFlow((prev) => ({
@@ -68,10 +69,20 @@ export default function FormBuilder() {
     setFormFlow((prev) => ({
       ...prev,
       elements: prev.elements.map((element) =>
-        element.id === id ? { ...element, ...updates } : element
+        element.id === id
+          ? {
+              ...element,
+              bubble: {
+                ...element.bubble,
+                ...updates.bubble,
+              },
+              input: updates.input ? { ...element.input, ...updates.input } : element.input,
+            }
+          : element
       ),
     }));
   };
+  
 
   const handleDeleteElement = (id) => {
     setFormFlow((prev) => ({
@@ -83,6 +94,11 @@ export default function FormBuilder() {
   const handleSave = () => {
     if (!formFlow.name) {
       toast.warn("Please enter a form name")
+      return;
+    }
+
+    if (formFlow.elements.some((element) => !element.input?.type)) {
+      toast.warn("Please select any input type for all bubbles");
       return;
     }
 
@@ -177,7 +193,10 @@ export default function FormBuilder() {
               {/* </DragDropContext>  */}
             </TabsContent>
             <TabsContent value="response" activeTab={activeTab} className={styles.tabContent}>
-              <FormResponse formFlow={formFlow} />
+              <FormResponse 
+                formFlow={formFlow} 
+                isDark={isDarkMode}
+              />
             </TabsContent>
             <TabsContent value="preview" activeTab={activeTab} className={styles.tabContent}>
               <ChatbotForm formFlow={formFlow} />
