@@ -1,0 +1,7 @@
+{
+    "rewrites": [
+      { "source": "/api/(.*)", "destination": "https://form-builder-4zq9.onrender.com/api/$1" },
+      { "source": "/(.*)", "destination": "/" }
+    ]
+  }
+  
