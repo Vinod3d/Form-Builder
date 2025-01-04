@@ -17,7 +17,7 @@ const PORT = APP_PORT;
 
 // middleware
 app.use(cors({
-  origin: FRONTEND_URL,
+  origin: FRONTEND_URL || 'https://form-builder-z6ek.vercel.app',
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true
 }));
