@@ -3,6 +3,8 @@ import connectDB from './db/ConnectDB.js';
 import { APP_PORT, FRONTEND_URL, JWT_KEY, MONGO_URI } from './config/Index.js';
 import userRoutes from './routes/userRoutes.js';
 import workspaceRoutes from './routes/workspaceRoutes.js';
+import responseRoutes from './routes/responseRoutes.js';
+import analyticsRoutes from "./routes/analyticsRoutes.js";
 import errorHandler from './middleware/errorHandlers.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
@@ -27,6 +29,8 @@ app.use(cookieParser(JWT_KEY));
 // API Routes
 app.use('/api/user', userRoutes);
 app.use('/api/workspace', workspaceRoutes);
+app.use('/api/response', responseRoutes);
+app.use("/api/analytics", analyticsRoutes);
 
 app.use(express.static(path.join(__dirname, '../client/build')));
 
@@ -34,7 +38,6 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
 });
 
-console.log(path.join(__dirname, '../client', 'build')); // Log to confirm path
 
 
 // Health Check Route

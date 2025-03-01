@@ -1,45 +1,22 @@
+/* eslint-disable react/prop-types */
 // FormResponse.jsx
 import { FaEye, FaPlayCircle, FaCheckCircle } from "react-icons/fa";
 import styles from "./formResponse.module.css";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchResponsesByFormId } from "../../../../store/slice/responseSlice";
+import { fetchFormAnalytics } from "../../../../store/slice/analyticSlice";
 
-// Mock data for demonstration
-const mockAnalytics = {
-  views: 6,
-  starts: 100,
-  completed: 33,
-  submissions: [
-    {
-      id: "1",
-      submittedAt: "Jul 17, 03:23 PM",
-      answers: {
-        "button-1": "Hi!",
-        "email-1": "abc@g.com",
-        "text-1": "alpha",
-        "button-2": "Studio App to Manage Clients, Tracking App for Clients",
-        "rating-1": 5,
-      },
-    },
-    {
-      id: "2",
-      submittedAt: "Jul 17, 02:48 PM",
-      answers: {
-        "button-1": "Hi!",
-        "email-1": "fidfasd",
-        "rating-1": 3,
-      },
-    },
-    {
-      id: "3",
-      submittedAt: "Jul 14, 04:25 PM",
-      answers: {
-        "button-1": "Hi!",
-        "rating-1": 4,
-      },
-    },
-  ],
-};
+function FormResponse({isDark, formFlow, form }) {
+  const formId = formFlow?.id
+  const dispatch = useDispatch();
+  const {responses} = useSelector((state)=>state.responses)
+  useEffect(() => {
+    dispatch(fetchResponsesByFormId(formId))
+    dispatch(fetchFormAnalytics(formId)); 
+  },[dispatch, formId])
 
-function FormResponse({isDark, formFlow }) {
+
   if (formFlow.elements.length === 0) {
     return (
       <div className={styles.card}>
@@ -52,7 +29,21 @@ function FormResponse({isDark, formFlow }) {
     );
   }
 
-  const completionRate = (mockAnalytics.completed / mockAnalytics.starts) * 100;
+  const completionRate = (form?.analytics?.completed / form?.analytics.starts) * 100;
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleString('en-US', {
+      weekday: 'short',
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true,
+    });
+  }
+  
 
   return (
     <div className={styles.container} style={{ 
@@ -61,9 +52,9 @@ function FormResponse({isDark, formFlow }) {
     }}>
       {/* Metrics */}
       <div className={styles.metricsGrid}>
-        <MetricCard title="Views" value={mockAnalytics.views} icon={FaEye} />
-        <MetricCard title="Starts" value={mockAnalytics.starts} icon={FaPlayCircle} />
-        <MetricCard title="Completed" value={mockAnalytics.completed} icon={FaCheckCircle} />
+        <MetricCard title="Views" value={form?.analytics.views} icon={FaEye} />
+        <MetricCard title="Starts" value={form?.analytics.starts} icon={FaPlayCircle} />
+        <MetricCard title="Completed" value={form?.analytics.completed} icon={FaCheckCircle} />
       </div>
 
       {/* Submissions Table */}
@@ -77,21 +68,21 @@ function FormResponse({isDark, formFlow }) {
               <tr>
                 <th>#</th>
                 <th>Submitted at</th>
-                {formFlow.elements.map((element) => (
-                  <th key={element.id}>
-                    {element.input?.label || element.bubble.content}
+                {responses[0]?.responses.map((element) => (
+                  <th key={element._id}>
+                    {element.question}
                   </th>
                 ))}
               </tr>
             </thead>
             <tbody>
-              {mockAnalytics.submissions.map((submission, index) => (
-                <tr key={submission.id}>
+              {responses?.map((form, index) => (
+                <tr key={form._id}>
                   <td>{index + 1}</td>
-                  <td>{submission.submittedAt}</td>
-                  {formFlow.elements.map((element) => (
+                  <td>{formatDate(form.submittedAt)}</td>
+                  {form?.responses.map((element) => (
                     <td key={element.id}>
-                      {submission.answers[element.id] || "-"}
+                      {element.answer}
                     </td>
                   ))}
                 </tr>

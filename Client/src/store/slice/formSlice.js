@@ -58,6 +58,22 @@ const formSlice = createSlice({
       state.error = action.payload;
     },
 
+    // Update Form
+    updateFormRequest(state) {
+      state.loading = true;
+      state.error = null;
+    },
+    updateFormSuccess(state, action) {
+      state.loading = false;
+      state.forms = state.forms.map((form) =>
+        form._id === action.payload._id ? action.payload : form
+      );
+      state.message = "Form Saved.";
+    },
+    updateFormFailed(state, action) {
+      state.loading = false;
+      state.error = action.payload;
+    },
 
     // get form by folder id
 
@@ -74,7 +90,6 @@ const formSlice = createSlice({
       state.error = action.payload;
     },
 
-
     // Clear Errors and Messages
     clearErrors(state) {
       state.error = null;
@@ -85,15 +100,17 @@ const formSlice = createSlice({
   },
 });
 
-// Action Creators
 
 // Fetch Forms
 export const fetchFormById = (formId) => async (dispatch) => {
   dispatch(formSlice.actions.getFormByIdRequest());
   try {
-    const response = await axios.get(`${baseUrl}/api/workspace/folder/getform/${formId}`, {
-      withCredentials: true,
-    });
+    const response = await axios.get(
+      `${baseUrl}/api/workspace/folder/getform/${formId}`,
+      {
+        withCredentials: true,
+      }
+    );
     dispatch(formSlice.actions.getFormByIdSuccess(response.data.form));
   } catch (error) {
     dispatch(
@@ -103,25 +120,29 @@ export const fetchFormById = (formId) => async (dispatch) => {
 };
 
 // Add Form
-export const addNewForm = ( {title, folderId }) => async (dispatch) => {
-  console.log(title, folderId)
-  dispatch(formSlice.actions.addFormRequest());
-  try {
-    const response = await axios.post(`${baseUrl}/api/workspace/folder/addform`, { title, folderId }, {
-      withCredentials: true,
-    });
-    console.log(response.data.form)
-    dispatch(formSlice.actions.addFormSuccess(response.data.form));
-  } catch (error) {
-    dispatch(
-      formSlice.actions.addFormFailed(error.response?.data?.message)
-    );
-  }
-};
+export const addNewForm =
+  ({ title, folderId }) =>
+  async (dispatch) => {
+    console.log(title, folderId);
+    dispatch(formSlice.actions.addFormRequest());
+    try {
+      const response = await axios.post(
+        `${baseUrl}/api/workspace/folder/addform`,
+        { title, folderId },
+        {
+          withCredentials: true,
+        }
+      );
+      console.log(response.data.form);
+      dispatch(formSlice.actions.addFormSuccess(response.data.form));
+    } catch (error) {
+      dispatch(formSlice.actions.addFormFailed(error.response?.data?.message));
+    }
+  };
 
 // Delete Form
 export const deleteForm = (folderId, formId) => async (dispatch) => {
-  console.log(folderId, formId)
+  console.log(folderId, formId);
   dispatch(formSlice.actions.deleteFormRequest());
   try {
     await axios.delete(`${baseUrl}/api/workspace/folder/deleteform`, {
@@ -130,8 +151,28 @@ export const deleteForm = (folderId, formId) => async (dispatch) => {
     });
     dispatch(formSlice.actions.deleteFormSuccess({ folderId, formId }));
   } catch (error) {
+    dispatch(formSlice.actions.deleteFormFailed(error.response?.data?.message));
+  }
+};
+
+// Async Thunk: Update Form
+export const updateForm = ({formId, updatedData}) => async (dispatch) => {
+
+  console.log(formId, updatedData);
+  dispatch(formSlice.actions.updateFormRequest());
+  try {
+    const response = await axios.patch(
+      `${baseUrl}/api/workspace/folder/form/${formId}`,
+      updatedData,
+      { withCredentials: true }
+    );
+
+    console.log(response)
+
+    dispatch(formSlice.actions.updateFormSuccess(response.data));
+  } catch (error) {
     dispatch(
-      formSlice.actions.deleteFormFailed(error.response?.data?.message)
+      formSlice.actions.updateFormFailed(error.response?.data?.message)
     );
   }
 };
@@ -139,13 +180,16 @@ export const deleteForm = (folderId, formId) => async (dispatch) => {
 
 // Fetching Forms by Folder ID
 export const fetchFormsByFolderId = (folderId) => async (dispatch) => {
-  console.log(folderId)
+  console.log(folderId);
   dispatch(formSlice.actions.getFormsByFolderRequest());
   try {
-    const response = await axios.get(`${baseUrl}/api/workspace/folder/${folderId}/getforms`, {
-      withCredentials: true,
-    });
-    console.log(response)
+    const response = await axios.get(
+      `${baseUrl}/api/workspace/folder/${folderId}/getforms`,
+      {
+        withCredentials: true,
+      }
+    );
+    console.log(response);
     dispatch(formSlice.actions.getFormsByFolderSuccess(response.data.forms));
   } catch (error) {
     dispatch(

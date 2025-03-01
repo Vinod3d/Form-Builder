@@ -9,6 +9,7 @@ import Workspace from './pages/workspace/workspace';
 import withAuth from './components/withAuth';
 import Settings from './pages/settings/Settings';
 import FormBuilder from './pages/formBuilder/FormBuilder';
+import ChatbotForm from './pages/formBuilder/components/chatbot-form/ChatbotForm';
 
 
 export default function App() {
@@ -24,6 +25,7 @@ export default function App() {
         <Route path="/workspace" element={<ProtectedWorkspace/>} />
         <Route path="/settings" element={<ProtectedSettings/>} />
         <Route path="/form-builder/:formId" element={<ProtectedFormBuilder/>} />
+        <Route path="/form/:formId" element={<ChatbotForm/>} />
       </Routes>
       <ToastContainer position='top-right' />
     </Router>

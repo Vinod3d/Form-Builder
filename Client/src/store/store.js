@@ -6,6 +6,8 @@ import userReducer from './slice/userSlice.js'
 import workspaceReducer from './slice/workspaceSlice.js'
 import folderReducer from './slice/foderSlice.js'
 import formReducer from './slice/formSlice.js'
+import responseReducer from './slice/responseSlice.js'; 
+import analyticReducer from './slice/analyticSlice.js'; 
 
 const persistConfig = {
     key: "root",
@@ -18,6 +20,9 @@ const rootReducer = combineReducers({
     workspace: workspaceReducer,
     folder: folderReducer, 
     form: formReducer,
+    responses: responseReducer,
+    analytics: analyticReducer
+
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

@@ -140,7 +140,6 @@ export const getFolderById = async (req, res,  next) => {
 export const addForm = async (req, res, next) => {
   try {
     const { title, folderId } = req.body;
-    console.log(req.body);
 
     if (!title) {
       return res.status(400).json({ message: "Title is required" });
@@ -186,6 +185,108 @@ export const deleteForm = async (req, res, next) => {
     next(error);
   }
 };
+
+
+// export const updateForm = async (req, res, next) => {
+//   const { formId } = req.params;
+//   const { name, elements } = req.body;
+
+//   try {
+//     if (!name && !elements) {
+//       return res.status(400).json({ message: "No data provided to update." });
+//     }
+
+//     // Build dynamic update object
+//     const updateData = {};
+//     if (name) updateData.title = name; // Update `title` field
+//     if (elements) updateData.elements = elements; // Replace `elements` array
+
+//     const updatedForm = await Form.findByIdAndUpdate(
+//       formId,
+//       { $set: updateData }, // Use `$set` for replacing fields
+//       { new: true, runValidators: true }
+//     );
+
+//     if (!updatedForm) {
+//       return res.status(404).json({ message: "Form not found." });
+//     }
+
+//     return res.status(200).json({
+//       message: "Form updated successfully.",
+//       updatedForm,
+//     });
+//   } catch (error) {
+//     console.error("Error updating form:", error);
+//     next(error);
+//   }
+// };
+
+
+export const updateForm = async (req, res, next) => {
+  const { formId } = req.params;
+  const { name, elements, analytics, isSubmitted } = req.body;
+  console.log(req.body)
+
+  try {
+    // Validate that at least one field is provided
+    if (!name && !elements && !analytics && typeof isSubmitted === "undefined") {
+      return res.status(400).json({ message: "No data provided to update." });
+    }
+
+    // Build dynamic update object
+    const updateData = {};
+    const incrementData = {};
+
+    // Update `title` field if provided
+    if (name) updateData.title = name;
+
+    // Update `elements` array if provided
+    if (elements) updateData.elements = elements;
+
+    // Increment analytics fields if provided
+    if (analytics) {
+      for (const key in analytics) {
+        if (typeof analytics[key] === "number") {
+          incrementData[`analytics.${key}`] = analytics[key];
+        } else {
+          return res.status(400).json({
+            message: `Invalid value for analytics field "${key}". It must be a number.`,
+          });
+        }
+      }
+    }
+
+    // Update `isSubmitted` field if provided
+    if (typeof isSubmitted === "boolean") {
+      updateData.isSubmitted = isSubmitted;
+    }
+
+    // Perform the update with `$set` and `$inc`
+    const updatedForm = await Form.findByIdAndUpdate(
+      formId,
+      {
+        ...(Object.keys(updateData).length > 0 && { $set: updateData }),
+        ...(Object.keys(incrementData).length > 0 && { $inc: incrementData }),
+      },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedForm) {
+      return res.status(404).json({ message: "Form not found." });
+    }
+
+    return res.status(200).json({
+      message: "Form updated successfully.",
+      updatedForm,
+    });
+  } catch (error) {
+    console.error("Error updating form:", error);
+    next(error);
+  }
+};
+
+
+
 
 
 export const getFormsByFolderId = async (req, res, next) => {

@@ -6,8 +6,10 @@
   
   .dark {
     background: var(--border-color);
+    color: #fff;
 }
   
 .light {
     background: #fff;
+    
 }

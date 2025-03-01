@@ -15,9 +15,9 @@ import { useNavigate } from "react-router-dom";
 function Workspace() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { workspace } = useSelector((state) => state.workspace || {});
-  const { folders } = useSelector((state) => state.folder || {});
-  const { forms } = useSelector((state) => state.form || {});
+  const { workspace = {} } = useSelector((state) => state.workspace || {});
+  const { folders = [] } = useSelector((state) => state.folder || {});
+  const { forms = [] } = useSelector((state) => state.form || {});
   const [isDark, setIsDark] = useState(true);
   const [isFolderModalOpen, setIsFolderModalOpen] = useState(false);
   const [isFormbotModalOpen, setIsFormbotModalOpen] = useState(false);
@@ -30,7 +30,7 @@ function Workspace() {
   const [currentWorkspace, setCurrentWorkspace] = useState(null);
   const [currentTab, setCurrentTab] = useState(folders[0]);
   const [folderName, setFolderName] = useState("");
-  const [formBots, setFormBots] = useState(forms && forms);
+  const [formBots, setFormBots] = useState([]);
   const [formbotName, setFormBotName] = useState("");
 
   // Fetch workspace data on component mount
@@ -44,10 +44,11 @@ function Workspace() {
       setCurrentWorkspace(workspace);
     }
   }, [workspace]);
+  
 
   // Fetch folders when currentWorkspace changes
   useEffect(() => {
-    if (currentWorkspace?.folders) {
+    if (currentWorkspace?.folders.length) {
       currentWorkspace.folders.forEach((id) => {
         dispatch(fetchFolderById(id));
       });
@@ -56,7 +57,7 @@ function Workspace() {
 
   // Set currentTab and fetch forms when folders are loaded
   useEffect(() => {
-    if (folders.length > 0) {
+    if (folders?.length > 0) {
       // setTabs(folders);
       setCurrentTab(folders[0]);
     }
@@ -125,7 +126,8 @@ function Workspace() {
   
 
   // Delete Typebot handler
-  const handleDeleteFormbot = (folderId, formId) => {
+  const handleDeleteFormbot = (folderId, formId, event) => {
+    event.stopPropagation();
     setIsDeleteFormModalOpen(true)
     setFolderId(folderId)
     setFormId(formId)
@@ -237,7 +239,7 @@ function Workspace() {
                 <span>{formbot.title}</span>
                 <RiDeleteBin6Line 
                   className={styles.deleteIcon}
-                  onClick={() => handleDeleteFormbot(formbot.folderId, formbot._id)}
+                  onClick={(event) => handleDeleteFormbot(formbot.folderId, formbot._id, event)}
                 />
               </div>
             ))}

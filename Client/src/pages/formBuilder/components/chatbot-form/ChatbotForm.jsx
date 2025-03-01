@@ -4,24 +4,60 @@ import { useState, useRef, useEffect } from "react";
 import styles from "./ChatbotForm.module.css";
 import { FaPaperPlane } from "react-icons/fa";
 import { toast } from "react-toastify";
+import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchFormById, updateForm } from "../../../../store/slice/formSlice";
+import { createResponse } from "../../../../store/slice/responseSlice";
 
-export default function ChatbotForm({ formFlow }) {
+export default function ChatbotForm() {
+  const { formId } = useParams();
+  const dispatch = useDispatch();
+  const {forms, loading, error} = useSelector((state)=> state.form);
   const [messages, setMessages] = useState([]);
   const [currentStep, setCurrentStep] = useState(0);
   const [currentInput, setCurrentInput] = useState("");
   const [started, setStarted] = useState(false);
-  const [answers, setAnswers] = useState({});
   const scrollRef = useRef(null);
+  const [form, setForm] = useState({
+    name: "",
+    elements: [],
+  });
 
-  console.log(formFlow)
+  const [formStarted, setFormStarted] = useState(0);
+
+  useEffect(()=>{
+    dispatch(
+      updateForm({
+        formId,
+        updatedData: { analytics: { views: 1 } },
+      })
+    );
+  },[formId])
+
+
+  useEffect(() => {
+    if (formId) {
+      dispatch(fetchFormById(formId));
+    }
+  }, [dispatch, formId]);
+
+
+  useEffect(() => {
+    if (forms) {
+      setForm({
+        name: forms.title || "",
+        elements: forms.elements || [],
+      });
+    }
+  }, [forms]);
 
   useEffect(() => {
     const initialAnswers = {};
-    formFlow.elements.forEach((element) => {
+    form.elements.forEach((element) => {
       initialAnswers[element.bubble.content] = "";
     });
-    setAnswers(initialAnswers);
-  }, [formFlow]);
+
+  }, [form]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -30,57 +66,103 @@ export default function ChatbotForm({ formFlow }) {
   }, [messages]);
 
   const addMessage = (type, bubble) => {
-    setMessages((prev) => [
-      ...prev,
-      {
-        id: Math.random().toString(36).substr(2, 9),
-        type,
-       ...bubble,
-      },
-    ]);
+    setMessages((prevMessages) => {
+      if (
+        (type === "question" &&
+          prevMessages.some(
+            (msg) => msg.type === "question" && msg.bubble.id === bubble.bubble.id
+          )) ||
+        (type === "answer" &&
+          prevMessages.some(
+            (msg) => msg.type === "answer" && msg.bubble.id === bubble.bubble.id
+          ))
+      ) {
+        return prevMessages;
+      }
+  
+      return [
+        ...prevMessages,
+        {
+          type,
+          ...bubble,
+        },
+      ];
+    });
   };
-
+  
   const handleStart = () => {
-    if (!formFlow.elements || formFlow.elements.length === 0) {
+    if (!form.elements || form.elements.length === 0) {
       return;
     }
-
+    
+    dispatch(
+      updateForm({
+        formId,
+        updatedData: { analytics: { starts: 1 } },
+      })
+    );
     setStarted(true);
-    addMessage("question", formFlow.elements[0]);
+    addMessage("question", { bubble: form.elements[0].bubble });
   };
-
+  
   const handleSubmitAnswer = () => {
     const trimmedInput = currentInput.trim();
-
+  
     if (!trimmedInput) return;
-
-    formFlow.elements[currentStep].bubble.userInput = trimmedInput;
-    addMessage("answer", formFlow.elements[currentStep]);
-    setAnswers((prev) => ({
-      ...prev,
-      [formFlow.elements[currentStep].id]: trimmedInput,
-    }));
-
-
+    addMessage("answer", {
+      bubble: {
+        ...form.elements[currentStep].bubble,
+        userInput: trimmedInput,
+      },
+    });
+  
     setCurrentInput("");
-
+  
     setTimeout(() => {
-      if (currentStep < formFlow.elements.length - 1) {
-        setCurrentStep((prev) => prev + 1);
-        addMessage("question", formFlow.elements[currentStep + 1]);
+      if (currentStep < form.elements.length - 1) {
+        const nextStep = currentStep + 1;
+        setCurrentStep(nextStep);
+        addMessage("question", { bubble: form.elements[nextStep].bubble });
       } else {
-        addMessage("info", "You have completed the form.");
+        addMessage("info", { bubble: { content: "You have completed the form." } });
       }
     }, 500);
   };
 
-  const handleFormSubmit = () => {
-   toast.success("form submitted successfully")
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      handleSubmitAnswer();
+    }
   };
+
+  const handleFormSubmit = () => {
+    const responses = messages
+      .map((message, index) => ({
+        bubble: {
+          type: message.bubble.type,
+          content: message.bubble.content,
+          url: message.bubble.url || "",
+        },
+        input: {
+          value: message.bubble.userInput,
+        },
+      }))
+      .filter((message) => message.input.value !== null);
+      
+      dispatch(createResponse({formId, responses}))
+      dispatch(
+        updateForm({
+          formId,
+          updatedData: { analytics: { completed: 1 } },
+        })
+      );
+    toast.success("Form submitted successfully");
+  };
+  
 
   const renderContent = (content) => {
     console.log(content)
-
     if (content.bubble.type === "image" || content.bubble.type === "gif") {
       return (
         <>
@@ -108,7 +190,6 @@ export default function ChatbotForm({ formFlow }) {
         {content.type === 'question' && 
           <video className={styles.media} controls>
           <source src={content.bubble.url} type="video/mp4" />
-          Your browser does not support the video tag.
         </video>
         }
         
@@ -126,7 +207,7 @@ export default function ChatbotForm({ formFlow }) {
     return (
       <div className={styles.container}>
         <div className={styles.card}>
-          <h2 className={styles.title}>{formFlow.name || "Chatbot Form"}</h2>
+          <h2 className={styles.title}>{form.name || "Chatbot Form"}</h2>
           <button className={styles.button} onClick={handleStart}>
             Start
           </button>
@@ -139,9 +220,9 @@ export default function ChatbotForm({ formFlow }) {
     <div className={styles.container}>
       <div className={styles.card}>
         <div ref={scrollRef} className={styles.messages}>
-          {messages.map((msg) => (
+          {messages.map((msg, index) => (
             <div
-              key={msg.id}
+              key={index}
               className={styles.msgContainer}
             >
               <div  className={`${styles.message} ${
@@ -152,7 +233,7 @@ export default function ChatbotForm({ formFlow }) {
             </div>
           ))}
         </div>
-        { formFlow.elements[currentStep]?.input?.type === "submit" ? (
+        { form.elements[currentStep]?.input?.type === "submit" ? (
           <button
           className={styles.submitButton}
           onClick={handleFormSubmit}
@@ -166,6 +247,7 @@ export default function ChatbotForm({ formFlow }) {
               type="text"
               value={currentInput}
               onChange={(e) => setCurrentInput(e.target.value)}
+              onKeyDown={handleKeyDown}
               placeholder="Type your answer..."
             />
             <button

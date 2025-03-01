@@ -14,18 +14,22 @@ const FormSchema = new mongoose.Schema({
       },
       input: {
         id: { type: String },
-        type: { type: String, enum: ["text", "email", "number", "date", "tel", "textarea"] },
+        type: { type: String, enum: ["text", "email", "number", "date", "tel", "textarea", "submit"] },
         placeholder: { type: String },
         options: [String],
         required: { type: Boolean, default: false },
       },
     },
   ],
-  sharedLink: { type: String, unique: true },
   folderId: { type: mongoose.Schema.Types.ObjectId, ref: "Folder" },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
-});
+  analytics: {
+    views: { type: Number, default: 0 },
+    starts: { type: Number, default: 0 },
+    completed: { type: Number, default: 0 },
+  },
+  isSubmitted: { type: Boolean, default: false },
+
+}, { timestamps: true });
 
 
 

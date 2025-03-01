@@ -195,4 +195,10 @@ input:checked + .switchLabel::after {
     position: absolute;
     top: -15px;
     right: -5px;
+    font-size: 18px;
+    transition: font-size 0.3s ease, transform 0.3s ease;
+  }
+
+  .deleteIcon:hover{
+    font-size: 22px;
   }

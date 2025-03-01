@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './FormBuilder.module.css';
 import { Input } from '../../components/input/Input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/Tab/Tabs';
@@ -8,19 +8,42 @@ import FormPreview from './components/form-preview/FormPreview';
 import FormResponse from './components/form-response/FormResponse';
 import Sidebar from './components/sidebar/Sidebar';
 import ChatbotForm from './components/chatbot-form/ChatbotForm';
+import { useDispatch, useSelector } from "react-redux";
+import { fetchFormById, updateForm } from '../../store/slice/formSlice';
+import { useParams } from 'react-router-dom'
+import { fetchResponsesByFormId } from '../../store/slice/responseSlice';
 
 export default function FormBuilder() {
+  const { formId } = useParams()
+  const dispatch = useDispatch();
+  const {forms, loading, error} = useSelector((state)=> state.form);
+  console.log(forms)
   const [formFlow, setFormFlow] = useState({
-    id: '1',
-    name: '',
+    id: "1",
+    name: "",
     elements: [],
-    isPublished: false,
   });
   const [activeTab, setActiveTab] = useState('flow');
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [activeBubbleId, setActiveBubbleId] = useState(null);
 
   console.log(formFlow)
+
+  useEffect(() => {
+    if (formId) {
+      dispatch(fetchFormById(formId));
+    }
+  }, [dispatch, formId]);
+
+  useEffect(() => {
+    if (forms) {
+      setFormFlow({
+        id: forms._id || "1",
+        name: forms.title || "",
+        elements: forms.elements || [],
+      });
+    }
+  }, [forms]);
 
   const handleAddElement = (bubbleType) => {
     const newElement = {
@@ -91,7 +114,7 @@ export default function FormBuilder() {
     }));
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!formFlow.name) {
       toast.warn("Please enter a form name")
       return;
@@ -107,27 +130,38 @@ export default function FormBuilder() {
       return;
     }
 
-    setFormFlow((prev) => ({ ...prev, isPublished: true }));
-    setActiveTab('preview');
-    toast.success("form saved");
+    const updatedData = {
+      ...formFlow,
+      isSubmitted: true,
+    }
+
+    try {
+      await dispatch(updateForm({ formId: formId, updatedData }));
+      toast.success("form saved");
+    } catch (error) {
+      toast.error("Failed to save the form.");
+    }
+
   };
 
   const handleShare = () => {
-    if (!formFlow.isPublished) {
-      toast({
-        title: 'Error',
-        description: 'Please save the form before sharing',
-        variant: 'destructive',
-      });
-      return;
-    }
+    const baseUrl = window.location.origin;
+    const chatbotUrl = `${baseUrl}/form/${formId}`;
 
-    // Share form logic here
-    toast({
-      title: 'Success',
-      description: 'Form link copied to clipboard',
-    });
+    navigator.clipboard.writeText(chatbotUrl)
+      .then(() => {
+        toast.success("Chatbot URL copied to clipboard!");
+      })
+      .catch((err) => {
+        toast.error("Failed to copy URL. Please try again.");
+      });
   };
+
+
+  if(activeTab === 'response'){
+    console.log("run")
+   dispatch(fetchResponsesByFormId(formId))
+  }
 
   return (
     <div className={`${styles.container} ${isDarkMode ? styles.dark : styles.light}`}>
@@ -147,9 +181,6 @@ export default function FormBuilder() {
               </TabsTrigger>
               <TabsTrigger isDark={isDarkMode} value="response" onClick={() => setActiveTab('response')} isActive={activeTab === 'response'}>
                 Response
-              </TabsTrigger>
-              <TabsTrigger isDark={isDarkMode} value="preview" onClick={() => setActiveTab('preview')} isActive={activeTab === 'preview'} disabled={!formFlow.isPublished}>
-                Preview
               </TabsTrigger>
             </TabsList>
           </Tabs>
@@ -185,6 +216,7 @@ export default function FormBuilder() {
                 <FormPreview
                   isDark={isDarkMode}
                   elements={formFlow.elements}
+
                   onUpdateElement={handleUpdateElement}
                   onDeleteElement={handleDeleteElement}
                   onBubbleSelect={setActiveBubbleId}
@@ -194,12 +226,10 @@ export default function FormBuilder() {
             </TabsContent>
             <TabsContent value="response" activeTab={activeTab} className={styles.tabContent}>
               <FormResponse 
+                form={forms}
                 formFlow={formFlow} 
                 isDark={isDarkMode}
               />
-            </TabsContent>
-            <TabsContent value="preview" activeTab={activeTab} className={styles.tabContent}>
-              <ChatbotForm formFlow={formFlow} />
             </TabsContent>
           </div>
         </main>
